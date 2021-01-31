@@ -1,2 +1,2 @@
 # blog-ac
-Alexey Chernyavsky's technical blog
+Alexey Chernyavsky's personal blog
