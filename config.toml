@@ -1,4 +1,4 @@
-baseURL = "https://alex-chernyavsky.netlify.app"
+baseURL = "https://ac.blogs.iit.kz"
 title = "Alexey Chernyavskiy"
 
 theme = "hugo-coder"
@@ -162,7 +162,7 @@ pygmentsCodeFencesGuessSyntax = true
             name = "RSS"
             icon = "fa fa-rss"
             weight = 6
-            url = "https://alex-chernyavsky.netlify.app/index.xml"
+            url = "https://ac.blogs.iit.kz/index.xml"
             rel = "alternate"
             type = "application/rss+xml"
             
@@ -226,7 +226,7 @@ pygmentsCodeFencesGuessSyntax = true
             name = "RSS"
             icon = "fa fa-rss"
             weight = 6
-            url = "https://alex-chernyavsky.netlify.app/en/index.xml"
+            url = "https://ac.blogs.iit.kz/en/index.xml"
             rel = "alternate"
             type = "application/rss+xml"
 
