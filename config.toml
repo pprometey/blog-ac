@@ -113,39 +113,6 @@ pygmentsCodeFencesGuessSyntax = true
   tag = "tags"
   author = "authors"
 
-[[params.social]]
-    name = "Github"
-    icon = "fa fa-github"
-    weight = 1
-    url = "https://github.com/pprometey/"
-[[params.social]]
-    name = "Gitlab"
-    icon = "fa fa-gitlab"
-    weight = 2
-    url = "https://gitlab.com/pprometey/"
-[[params.social]]
-    name = "Twitter"
-    icon = "fa fa-twitter"
-    weight = 3
-    url = "https://twitter.com/pprometey/"
-[[params.social]]
-    name = "LinkedIn"
-    icon = "fa fa-linkedin"
-    weight = 4
-    url = "https://www.linkedin.com/in/pprometey/"
-[[params.social]]
-    name = "Facebook"
-    icon = "fa fa-facebook"
-    weight = 5
-    url = "https://www.facebook.com/alexey.che"
-[[params.social]]
-    name = "RSS"
-    icon = "fa fa-rss"
-    weight = 6
-    url = "https://ac.blogs.iit.kz/index.xml"
-    rel = "alternate"
-    type = "application/rss+xml"
-
 
 [languages]
     [languages.ru]
@@ -157,7 +124,39 @@ pygmentsCodeFencesGuessSyntax = true
           description = "Персональный блог Чернявского Алексея"
           keywords = "блог,разработчик,персональный"
           info = "Программный инженер"
-
+        [[languages.ru.params.social]]
+            name = "Github"
+            icon = "fa fa-github"
+            weight = 1
+            url = "https://github.com/pprometey/"
+        [[languages.ru.params.social]]
+            name = "Gitlab"
+            icon = "fa fa-gitlab"
+            weight = 2
+            url = "https://gitlab.com/pprometey/"
+        [[languages.ru.params.social]]
+            name = "Twitter"
+            icon = "fa fa-twitter"
+            weight = 3
+            url = "https://twitter.com/pprometey/"
+        [[languages.ru.params.social]]
+            name = "LinkedIn"
+            icon = "fa fa-linkedin"
+            weight = 4
+            url = "https://www.linkedin.com/in/pprometey/"
+        [[languages.ru.params.social]]
+            name = "Facebook"
+            icon = "fa fa-facebook"
+            weight = 5
+            url = "https://www.facebook.com/alexey.che"
+        [[languages.ru.params.social]]
+            name = "RSS"
+            icon = "fa fa-rss"
+            weight = 6
+            url = "https://ac.blogs.iit.kz/index.xml"
+            rel = "alternate"
+            type = "application/rss+xml"
+            
         [languages.ru.menu]
             [[languages.ru.menu.main]]
             name = "Статьи"
@@ -189,6 +188,38 @@ pygmentsCodeFencesGuessSyntax = true
           description = "Personal blog of Alex Chernyavsky"
           keywords = "blog,developer,personal"
           info = "Software Engineer"
+        [[languages.en.params.social]]
+            name = "Github"
+            icon = "fa fa-github"
+            weight = 1
+            url = "https://github.com/pprometey/"
+        [[languages.en.params.social]]
+            name = "Gitlab"
+            icon = "fa fa-gitlab"
+            weight = 2
+            url = "https://gitlab.com/pprometey/"
+        [[languages.en.params.social]]
+            name = "Twitter"
+            icon = "fa fa-twitter"
+            weight = 3
+            url = "https://twitter.com/pprometey/"
+        [[languages.en.params.social]]
+            name = "LinkedIn"
+            icon = "fa fa-linkedin"
+            weight = 4
+            url = "https://www.linkedin.com/in/pprometey/"
+        [[languages.en.params.social]]
+            name = "Facebook"
+            icon = "fa fa-facebook"
+            weight = 5
+            url = "https://www.facebook.com/alexey.che"
+        [[languages.en.params.social]]
+            name = "RSS"
+            icon = "fa fa-rss"
+            weight = 6
+            url = "https://ac.blogs.iit.kz/en/index.xml"
+            rel = "alternate"
+            type = "application/rss+xml"
 
 
         [languages.en.menu]
