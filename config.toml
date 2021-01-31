@@ -97,7 +97,8 @@ pygmentsCodeFencesGuessSyntax = true
 		    "https://cdn.jsdelivr.net/"
     ]
 	  formaction = ["'self'"]
-	  framesrc = ["'self'"]
+	  framesrc = ["'self'",
+        "https://utteranc.es/"]
 	  imgsrc = ["'self'"]
 	  objectsrc = ["'none'"]
 	  stylesrc = [
