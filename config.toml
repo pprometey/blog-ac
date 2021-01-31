@@ -16,7 +16,7 @@ pygmentsCodeFencesGuessSyntax = true
 
 [params]
     avatarURL = "images/avatar.jpg"
-
+    #footerContent = "Enter a text here."
     dateFormat = "2006-01-02"
 
     hideFooter = false
@@ -53,6 +53,13 @@ pygmentsCodeFencesGuessSyntax = true
 
     # Custom JS
     customJS = []
+    
+[params.utterances]
+  repo = "pprometey/blog-ac"
+  issueTerm = "pathname"
+#  theme = "github-light" # https://utteranc.es/#heading-theme
+#  label = "" # https://utteranc.es/#heading-issue-label
+
 
 # If you want to use fathom(https://usefathom.com) for analytics, add this section
 #[params.fathomAnalytics]
@@ -103,15 +110,10 @@ pygmentsCodeFencesGuessSyntax = true
         "'self'",
 		    "'unsafe-inline'",
 		    "https://www.google-analytics.com",
-            "https://twemoji.maxcdn.com"
+            "https://twemoji.maxcdn.com",
+            "https://utteranc.es/"
     ]
 	  prefetchsrc = ["'self'"]
-
-[params.utterances]
-  repo = "pprometey/blog-ac" # https://utteranc.es/#heading-repository
-  issueTerm = "pathname" # https://utteranc.es/#heading-mapping
-  theme = "github-light" # https://utteranc.es/#heading-theme
-#  label = "" # https://utteranc.es/#heading-issue-label
 
 [taxonomies]
   category = "categories"
