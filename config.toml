@@ -102,7 +102,8 @@ pygmentsCodeFencesGuessSyntax = true
 	  scriptsrc = [
         "'self'",
 		    "'unsafe-inline'",
-		    "https://www.google-analytics.com"
+		    "https://www.google-analytics.com",
+            "https://twemoji.maxcdn.com"
     ]
 	  prefetchsrc = ["'self'"]
 
@@ -141,7 +142,7 @@ pygmentsCodeFencesGuessSyntax = true
     name = "RSS"
     icon = "fa fa-rss"
     weight = 6
-    url = "https://as.blogs.iit.kz/index.xml"
+    url = "https://ac.blogs.iit.kz/index.xml"
     rel = "alternate"
     type = "application/rss+xml"
 
