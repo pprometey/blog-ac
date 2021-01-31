@@ -152,7 +152,7 @@ pygmentsCodeFencesGuessSyntax = true
             name = "LinkedIn"
             icon = "fa fa-linkedin"
             weight = 4
-            url = "https://www.linkedin.com/in/pprometey/"
+            url = "https://www.linkedin.com/in/alex-chernavsky-57348612/"
         [[languages.ru.params.social]]
             name = "Facebook"
             icon = "fa fa-facebook"
@@ -216,7 +216,7 @@ pygmentsCodeFencesGuessSyntax = true
             name = "LinkedIn"
             icon = "fa fa-linkedin"
             weight = 4
-            url = "https://www.linkedin.com/in/pprometey/"
+            url = "https://www.linkedin.com/in/alex-chernavsky-57348612"
         [[languages.en.params.social]]
             name = "Facebook"
             icon = "fa fa-facebook"
