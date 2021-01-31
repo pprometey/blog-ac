@@ -362,6 +362,7 @@ class Program
  
 
 ## Источники и полезные ссылки
+- [Обсуждение данной статьи на Habr.com](https://habr.com/ru/post/539778/)
 - [Официальный сайт библиотеки Casbin](https://casbin.org)
 - [Design permissions for a SaaS app](https://uxdesign.cc/design-permissions-for-a-saas-app-db6c1825f20e)
 - [Подходы к контролю доступа: RBAC vs. ABAC](https://habr.com/ru/company/custis/blog/248649)
