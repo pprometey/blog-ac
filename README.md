@@ -11,3 +11,4 @@ Alexey Chernyavsky's personal blog
 [ ] fix ui tags cloud in tags
 [ ] fix ui category list 
 [ ] add material-ui in article as paper page
+[ ] toc in leftbar
