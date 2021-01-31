@@ -1,5 +1,5 @@
 +++ 
-draft = true
+draft = false
 date = 2021-01-31T22:47:10+06:00
 title = "Free Wireguard VPN service on AWS"
 description = "How to Create a 1 Year Free Wireguard VPN Service on AWS"
