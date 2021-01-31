@@ -56,7 +56,7 @@ pygmentsCodeFencesGuessSyntax = true
     
 [params.utterances]
   repo = "pprometey/blog-ac"
-  issueTerm = "pathname"
+  issueTerm = "title"
 #  theme = "github-light" # https://utteranc.es/#heading-theme
 #  label = "" # https://utteranc.es/#heading-issue-label
 
