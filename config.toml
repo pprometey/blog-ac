@@ -107,6 +107,12 @@ pygmentsCodeFencesGuessSyntax = true
     ]
 	  prefetchsrc = ["'self'"]
 
+[params.utterances]
+  repo = "pprometey/blog-ac" # https://utteranc.es/#heading-repository
+  issueTerm = "pathname" # https://utteranc.es/#heading-mapping
+  theme = "github-light" # https://utteranc.es/#heading-theme
+#  label = "" # https://utteranc.es/#heading-issue-label
+
 [taxonomies]
   category = "categories"
   series = "series"
