@@ -39,16 +39,16 @@ series = ["Безопасность в веб-приложениях"]
 Структура БД нашей CMS:  
 ![Схема таблиц БД](/images/casbin2/dbschema.png)
 
-Содержимое таблицы пользователей **Users**  
+Содержимое таблицы пользователей - **Users**:   
 ![Содержимое таблицы Users](/images/casbin2/users.png)
 
 Пользователям присвоены следующие роли
-Содержимое таблицы **Roles**  
+Содержимое таблицы - **Roles**: 
 ![Содержимое таблицы Roles](/images/casbin2/roles.png)
 
 Как мы видим, Piter является администратором, а Bob - супервизором. Alice обычный пользователь, может видеть, создавать и редактировать только свои статьи.
 
-Содержимое таблица с статьями **Articles**  
+Содержимое таблицы со статьями - **Articles**:  
 ![Содержимое таблицы Articles](/images/casbin2/articles.png)
 
 Исходя из вопроса, выборка осуществляется для администратора (Piter, id=3) таким образом: 
@@ -85,12 +85,12 @@ OR (r.role in ('admin', 'supevisor'))
 Т.е. когда мы описываем модель авторизации, под ресурсом в нашем примере подразумевается сама сущность (таблица) Статья. А не конкретная запись из этой таблицы (с Id=1 например).
 
 Дальше необходимо уточнить, что те роли, которые используются в описании этой задачи - это не классические роли из подхода RBAC.
-Роли RBAC описывают те разрешения, которые можно выполнить с сущностью. Например в классическом RBAC роль `user` могла бы только читать статьи, роль `author` могла бы  наследовала роль `user` (т.е. чтение статей), и еще могла бы редактировать создавать новые статьи, а роль `admin` могла бы наследовать все предыдущие разрешения и плюс еще удалять статьи. 
-В описанной же нами выше задаче, по сути эти все роли не отличаются друг от друга. И `user` и `supervisor` и `admin` имеют одни и те же права, один набор разрешений - каждый носитель любой из ролей может создавать, редактировать или удалять статьи. Разница только в области видимости, `user` может видеть в админке только свои статьи, и соответственно редактировать их и удалять. А `admin` и `supervisor` не только свои, но еще и чужие. 
+Роли RBAC описывают те разрешения, которые можно выполнить с сущностью. Например в классическом RBAC роль `user` могла бы только читать статьи, роль `author` могла бы  наследовала роль `user` (т.е. чтение статей), и еще могла бы редактировать и создавать новые статьи, а роль `admin` могла бы наследовать все предыдущие разрешения и плюс еще удалять статьи. 
+В описанной же нами выше задаче, по сути, все эти все роли не отличаются друг от друга. И `user` и `supervisor` и `admin` имеют одни и те же права, один набор разрешений - каждый носитель любой из ролей может создавать, редактировать или удалять статьи. Разница только в области видимости, `user` может видеть в админке только свои статьи, и соответственно редактировать их и удалять. А `admin` и `supervisor` не только свои, но еще и чужие. 
 И в этом заключается большой минус модели RBAC, так это статичная модель авторизации, и с ее помощью вообще невозможно выразить  бизнес-правила, в которых используются атрибуты, значения которых заранее не известны и вычисляются в процессе работы. 
 Об этом подробно уже было рассказано в статье [Подходы к контролю доступа: RBAC vs. ABAC](https://habr.com/ru/company/custis/blog/248649/)
 
-А те роли что мы используем (user, admin) - это так называемые - `динамические роли`. Термин не официальный, и зачастую каждый подразумеваем под ним свое, они реализуются различными способами, и описанное вопрошающим решение, которое я привел в начале статьи - один из таких подходов. 
+А те роли, что мы используем (`user`, `supervisor`, `admin`) - это так называемые - `динамические роли`. Термин не официальный, и зачастую каждый подразумеваем под ним свое. Они реализуются различными способами, и описанное вопрошающим решение, которое я привел в начале статьи - один из таких подходов. 
 
 ### Выборка значений с учетом "динамических ролей"
 
@@ -128,38 +128,38 @@ g, 2, supervisor
 g, 3, admin
 ```
 
-Суть здесь такая, что мы даем роли user права на чтение, модификацию, создание и удаление статей. Затем роль supervisor наследует права роли user. А роль admin наследует права роли supervisor.
-Далее пользователю alice(1) мы присваиваем роль user, bob(2) у нас supervisor, а piter(3) - admin
+Суть здесь такая, что мы даем роли `user` права на чтение, модификацию, создание и удаление статей. Затем роль `supervisor` наследует права роли `user.` А роль `admin` наследует права роли `supervisor`.
+Далее пользователю alice(1) мы присваиваем роль `user`, bob(2) у нас `supervisor`, а piter(3) - `admin`.
 В принципе этого достаточно, чтобы решить проблему, которую описывал автор вопроса.
 
 Этот код конечно не для продакшена, а для демонстрации. Для продакшена я советую использовать [cross-cutting concern](https://lurumad.github.io/cross-cutting-concerns-in-asp-net-core-with-meaditr) с [CQRS+MediatR](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/microservice-application-layer-implementation-web-api) 
 
 ```cs
-    public IList<Article> GetArticlesForAdminPanel(int currentUserId)
+public IList<Article> GetArticlesForAdminPanel(int currentUserId)
+{
+    var e = new Enforcer("CasbinConfig/rbac_model.conf", "CasbinConfig/rbac_policy.csv");
+
+    var obj = "article";
+    var act = "read";
+
+    //Сначала проверяем, что пользователь имеет права на чтение статей
+    if (e.Enforce(currentUserId.ToString(), obj, act))
     {
-        var e = new Enforcer("CasbinConfig/rbac_model.conf", "CasbinConfig/rbac_policy.csv");
+        //Получаем список ролей пользователя
+        var currentUserRoles = e.GetRolesForUser(currentUserId.ToString());
+        //Проверяем, является ли пользователем админиом или супервизором
+        var isAdmin = currentUserRoles.Any(x => x == "admin" || x == "supervisor");
 
-        var obj = "article";
-        var act = "read";
-
-        //Сначала проверяем, что пользователь имеет права на чтение статей
-        if (e.Enforce(currentUserId.ToString(), obj, act))
-        {
-            //Получаем список ролей пользователя
-            var currentUserRoles = e.GetRolesForUser(currentUserId.ToString());
-            //Проверяем, является ли пользователем админиом или супервизором
-            var isAdmin = currentUserRoles.Any(x => x == "admin" || x == "supervisor");
-
-            //Если админ, вернуть все записи, иначе только те, которые принадлежат пользователю
-            if (isAdmin) return _context.Articles.ToList();
-            else return _context.Articles.Where(x => x.OwnerId == currentUserId).ToList();
-        }
-        else
-        {
-            // отклонить запрос, показать ошибку
-            throw new Exception("401. У вас нет прав для чтения статей");	
-        }
+        //Если админ, вернуть все записи, иначе только те, которые принадлежат пользователю
+        if (!isAdmin) return _context.Articles.Where(x => x.OwnerId == currentUserId).ToList();
+        else return _context.Articles.ToList();
     }
+    else
+    {
+        // отклонить запрос, показать ошибку
+        throw new Exception("403. У вас нет прав для чтения статей");	
+    }
+}
 ```
 
 Тадам! Задача решена, ответ на вопрос дан. 
@@ -184,29 +184,29 @@ e = some(where (p.eft == allow))
 [matchers]
 m = (r.sub == r.obj.OwnerId.ToString() || g(r.sub, "supervisor")) && g(r.sub, p.sub) && r.act == p.act
 ```
-Данная модель не сильно отличается от модели чтения, за исключением секции `[matchers]`, в ней мы конструкцию  `r.obj == p.obj` заменили на `(r.sub == r.obj.OwnerId.ToString() || g(r.sub, "supervisor"))`. Это следует читать как _r.sub (id пользователя) должен совпадать с полем r.obj.OwnerId (id владельца обновляемой записи) или r.sub должен входить принадлежать группе "supervisor"_. Поскольку группа `admin` наследует все права группы `supervisor` то и члены группы `admin` будут соответствовать этому правилу. 
+Данная модель не сильно отличается от модели чтения, за исключением секции `[matchers]`, в ней мы конструкцию  `r.obj == p.obj` заменили на `(r.sub == r.obj.OwnerId.ToString() || g(r.sub, "supervisor"))`. Это следует читать как _r.sub (id пользователя) должен совпадать с полем r.obj.OwnerId (id владельца обновляемой записи) или r.sub должен принадлежать группе "supervisor"_. Поскольку группа `admin` наследует все права группы `supervisor` то и члены группы `admin` будут соответствовать этому правилу. 
 
 Файл с политиками остается прежним, его мы не меняем. Теперь смотрим как это выглядит в коде:
 ```cs
-    public void UpdateArticle(int currentUserId, Article newArticle)
+public void UpdateArticle(int currentUserId, Article newArticle)
+{
+    var e = new Enforcer("CasbinConfig/rbac_with_abac_model.conf", "CasbinConfig/rbac_policy.csv");
+
+    var act = "modify";
+
+    //Проверяем, что пользователь имеет права на редактирование статьи
+    if (e.Enforce(currentUserId.ToString(), newArticle, act))
     {
-        var e = new Enforcer("CasbinConfig/rbac_with_abac_model.conf", "CasbinConfig/rbac_policy.csv");
-
-        var act = "modify";
-
-        //Проверяем, что пользователь имеет права на редактирование статьи
-        if (e.Enforce(currentUserId.ToString(), newArticle, act))
-        {
-            //Обновляем, и сохраняем изменения
-            _context.Articles.Update(newArticle);
-            _context.SaveChanges();
-        }
-        else
-        {
-            // отклонить запрос, показать ошибку
-            throw new Exception("401");
-        }
+        //Обновляем, и сохраняем изменения
+        _context.Articles.Update(newArticle);
+        _context.SaveChanges();
     }
+    else
+    {
+        // отклонить запрос, показать ошибку
+        throw new Exception("403. Недостаточно прав");
+    }
+}
 ``` 
 Здесь стоит обратить внимание на то, что мы в метод `e.Enforce` передаем вторым параметром объект, который представляет из себя экземпляр класса `Article`.
 
@@ -235,25 +235,25 @@ m = (r.sub == r.obj.OwnerId.ToString() || g(r.sub, "admin")) && g(r.sub, p.sub) 
 
 Как и в случае с моделью, код мало чем отличается от предыдущего примера на редактирование:
 ```cs
-    public void DeleteArticle(int currentUserId, Article deleteArticle)
+public void DeleteArticle(int currentUserId, Article deleteArticle)
+{
+    var e = new Enforcer("CasbinConfig/delete_model.conf", "CasbinConfig/rbac_policy.csv");
+
+    var act = "delete";
+
+    //проверяем, что пользователь имеет права на удаление статьи
+    if (e.Enforce(currentUserId.ToString(), deleteArticle, act))
     {
-        var e = new Enforcer("CasbinConfig/delete_model.conf", "CasbinConfig/rbac_policy.csv");
-
-        var act = "delete";
-
-        //проверяем, что пользователь имеет права на удаление статьи
-        if (e.Enforce(currentUserId.ToString(), deleteArticle, act))
-        {
-            //Удаляем статью
-            _context.Articles.Remove(deleteArticle);
-            _context.SaveChanges();
-        }
-        else
-        {
-            // отклонить запрос, показать ошибку
-            throw new Exception("403");
-        }
+        //Удаляем статью
+        _context.Articles.Remove(deleteArticle);
+        _context.SaveChanges();
     }
+    else
+    {
+        // отклонить запрос, показать ошибку
+        throw new Exception("403. Недостаточно прав");
+    }
+}
 ``` 
 
 ## Резюме
