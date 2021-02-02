@@ -5,7 +5,7 @@ title = "Free Wireguard VPN service on AWS"
 description = "How to Create a 1 Year Free Wireguard VPN Service on AWS"
 tags = ["vpn", "wireguard", "aws", "aws ec2"]
 categories = ["Information Security", "Network Technologies", "VPN"]
-series = ["vpn", "wireguard", "aws"]
+series = ["VPN services"]
 +++
 
 # Free Wireguard VPN service on AWS
@@ -24,7 +24,6 @@ I tried to make this walkthrough as friendly as possible to people far from IT. 
 
 > Note
 * AWS offers [free usage tier](https://aws.amazon.com/ru/free/faqs/) for a period of 12 months limited to 15 GB of traffic monthly.
-* The most current version of this guide is located at [https://wireguard.isystem.io](https://wireguard.isystem.io)
 
 ## Stages
 1. [Register the AWS Account.](aws-account-registration)

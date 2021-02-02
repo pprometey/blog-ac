@@ -3,9 +3,9 @@ draft = false
 date = 2021-01-31T22:47:02+06:00
 title = "Бесплатный VPN сервис Wireguard на AWS"
 description = "Инструкция по созданию бесплатного на 1 год VPN сервиса Wireguard на базе AWS"
-tags = ["vpn", "wireguard", "aws", "aws ec2"]
+tags = ["vpn", "wireguard", "aws", "aws ec2", "Amazon Web Services", "Виртуальная частная сеть"]
 categories = ["Информационная безопасность", "Cетевые технологии", "VPN"]
-series = ["vpn", "wireguard", "aws"]
+series = ["VPN сервисы"]
 +++
 
 ## Для чего?
