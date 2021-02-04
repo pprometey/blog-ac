@@ -1,16 +1,16 @@
 +++ 
 draft = false
 date = 2021-02-02T12:09:01+06:00
-title = "Технология единого входа (Single Sign-On) и протокол OAuth2 "
+title = "Технология единого входа (Single Sign-On) на базе протокол OAuth 2.0 и OpenID Connect "
 description = "Описание технологии единого входа (Single Sign-On) и спецификации протокол OAuth2 в разрезе использования в приложениях разрабатываемых на платформе .NET"
 tags = ["sso", "OAuth2", "JWT", "Single Sign-On", "Идентификация", "Аутентификация", "Авторизация", "OpenID Connect", "IdentityServer 4", "JSON Web Token", "STS", "Security Token Service", "Сервис выдачи токенов", "Claims", "Grant Types", "Implicit flow", "Hybrid flow", "Authorization code", "Код авторизации", "Resource owner password", "Client credentials", "Device flow", "Refresh token"]
 categories = ["Информационная безопасность", "Веб-разработка"]
 series = ["Безопасность в веб-приложениях"]
 +++
 
-Данная статьи написана в качестве моих конспектов по изучению технологии единого входа (Single Sign-On) и спецификации протокол OAuth2 в разрезе использования в приложениях разрабатываемых на платформе .NET
+Данная статьи написана в качестве моих конспектов по изучению технологии единого входа (Single Sign-On) и спецификации протоколов OAuth2 и OpenID Connect в разрезе использования в приложениях разрабатываемых на платформе .NET
 
-## Введение
+## Основные термины
 
 Прежде всего необходимо разобраться с базовыми терминами, которые используются в области обеспечения безопасности приложений. 
 
@@ -41,16 +41,15 @@ Identification, Authentication, Authorization
 ```
 
 ***Ссылки***
-* [Идентификация, аутентификация, авторизация — в чем разница?](http://it-uroki.ru/uroki/bezopasnost/identifikaciya-autentifikaciya-avtorizaciya.html)
-
+- [Идентификация, аутентификация, авторизация — в чем разница?](http://it-uroki.ru/uroki/bezopasnost/identifikaciya-autentifikaciya-avtorizaciya.html)
+- [Аутентификация и авторизация в микросервисных приложениях](https://habr.com/ru/company/dataart/blog/311376/)
 
 ### Single Sign-On (SSO) 
-**Single Sign-On (SSO)** - 
-Single sign-on — технология единого входа — позволяет пользователю переключаться между различными приложениями без повторной аутентификации. Используя SSO можно избежать множественных логинов, так что пользователь просто не будет замечать этих переключений. При этом ситуации, когда в рамках вашей инфраструктуры таких приложений будет больше одного, встречаются постоянно. Технология единого входа особенно удобна в больших энтерпрайз-системах, состоящих из десятков приложений, слабо связанных между собой. Вряд ли пользователи будут довольны, вводя логин и пароль при каждом обращении к системе учета рабочего времени, корпоративному форуму или внутренней базе документов.
+**Single Sign-On (SSO)** — технология единого входа — позволяет пользователю переключаться между различными приложениями без повторной аутентификации. Используя SSO можно избежать множественных логинов, так что пользователь просто не будет замечать этих переключений. При этом ситуации, когда в рамках вашей инфраструктуры таких приложений будет больше одного, встречаются постоянно. Технология единого входа особенно удобна в больших энтерпрайз-системах, состоящих из десятков приложений, слабо связанных между собой. Вряд ли пользователи будут довольны, вводя логин и пароль при каждом обращении к системе учета рабочего времени, корпоративному форуму или внутренней базе документов.
 
 Или говоря другими словами, пользователь аутентифицируется один раз в SSO, и в дальнейшем авторизуется в различных приложениях с помощью этих аутентификационных данных. Централизованный сервис аутентификации.
 
-**SSO** обеспечивает пользователя **токеном**, с помощью которого он позднее сможет взаимодействовать с различными API и другими приложениями по протоколам **OpenID Connect** и **OAuth 2.0**. 
+**SSO** обеспечивает пользователя **токеном**, с помощью которого он позднее сможет взаимодействовать с различными API и другими приложениями по протоколам **OAuth 2.0** и **OpenID Connect**. 
 
 **Протокол** - это свод правил и стандартов.  
 Использование протоколов [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) и [OAuth 2.0](https://tools.ietf.org/html/rfc6749) в купе с [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7523) является наиболее востребованным на текущий момент способом обеспечения безопасности приложений. 
@@ -64,7 +63,7 @@ Single sign-on — технология единого входа — позво
 * [Authentication vs. Federation vs. SSO](https://medium.com/@robert.broeckelmann/authentication-vs-federation-vs-sso-9586b06b1380)
 
 ### Авторизация приложения, авторизация пользователя
-Application Authorization vs User Authorization.  
+**Application Authorization** vs **User Authorization**.  
 
 Необходимо разделять аутентификацию/авторизацию стороннего приложения, и аутентификацию/авторизацию пользователя, это разные процессы, имеющие разную цель.  
 
@@ -74,13 +73,6 @@ Application Authorization vs User Authorization.
 По правилам протокола OAuth2, SSO - аутентифицирует и авторизует сторонные приложение для доступа к ресурсам других сторонних приложений.  
 По правилам, описанным в спецификации протокола OpenID Connect, SSO авторизует пользователя для приложения, т.е. использует OAuth 
 2.0 для того, чтобы представить параметры профиля польозователя так, как будто это ресурсы стороннего приложения.
-
-### IdentityServer 4
-Это промежуточное ПО, реализация протоколов OAuth2 и OpenID Connect для .Net Core. Является одним из компонентов **SSO**.  
-![IdentityServer 4](/images/sso/ru/identityserver.jpg)
-
-***Ссылки***
-* [IdentityServer 4](identityserver)
 
 ## JSON Web Token (JWT)
 
@@ -115,10 +107,9 @@ Application Authorization vs User Authorization.
 
 ## OAuth 2 и OpenID Connect 
 
-Предварительно, необходимо ознакомится с основными терминами протоколов OAuth2 и Open ID Connect
+Предварительно, необходимо ознакомится с основными терминами протоколов OAuth2 и Open ID Connect.
 
-### Базовые понятия
-
+### Базовые понятия протоколов OAuth 2 и OpenID Connect
 #### Сервис выдачи токенов (Security Token Service - STS)
 
 **Security Token Service** — важнейший объект всей конструкции централизованного сервиса аутентификации, он также может называться Open ID Connect Provider, Identity Provider authorization server, IdentityServer, Авторизационный сервер и т. д. Различные источники называют его по-разному, но по смыслу это сервис, который выдает токены клиентам.
@@ -190,12 +181,12 @@ Cхема Refresh Token + Access Token ограничивает время, на
 
 Спецификации OpenID Connect и OAuth 2 определяют следующие варианты взаимодействия:
 **OAuth 2.0 Grant Types**:
-* Implicit (Неявный)
-* Authorization code (Код авторизации)
-* Resource owner password (Пароль владельца ресурса)
-* Client credentials (Учетные данные клиента)
-* Device flow (Поток устройства)
-* Refresh Token (Обновление токенов)
+* [Implicit (Неявный поток авторизации)](#implicit-нееявный-поток-авторизации)
+* [Authorization code (Код авторизации)](#authorization-code-код-авторизации)
+* [Resource owner password (Пароль владельца ресурса)](#hybrid-гибридный)
+* [Client credentials (Учетные данные клиента)](#resource-owner-password-пароль-владельца-ресурса)
+* [Device flow (Поток устройства)](#client-credentials-учетные-данные-клиента)
+* [Refresh Token (Обновление токенов)](#device-flow-поток-устройства)
 
 IdentityServer 4 реализует OAuth 2.0 grant types, и добавляет свои. 
 **Специфичные для IdentityServer Grant Types**:
@@ -206,7 +197,7 @@ IdentityServer 4 реализует OAuth 2.0 grant types, и добавляет
 * [OAuth 2.0 Grant Types](https://oauth.net/2/grant-types/)
 
 ## OAuth 2.0
-Абстрактное описание протокола OAuth 2.0
+Абстрактное описание протокола OAuth 2.0  
 ![Абстрактное описание протокола OAuth 2.0](/images/sso/ru/abstract-protocol-flow-russian.png)
 1. Приложение запрашивает у пользователя авторизацию на доступ к серверу ресурсов.  
 2. Если пользователь авторизует запрос, приложение получает разрешение на авторизацию (authorization grant).  
@@ -223,40 +214,53 @@ IdentityServer 4 реализует OAuth 2.0 grant types, и добавляет
 4. С полученным токеном Клиент запрашивает повторно ресурс API и прикладывает к запросу токен.
 5. API проверяету SSO валидность токена, и в случае успеха, предоставляет пользователю ресурс. 
 
-На диаграме ниже, показаны шаги 3-5.
+На диаграме ниже, показаны шаги 3-5.  
 ![Концептуальная схема работы протокола OAuth2](/images/sso/ru/oauth2.png)
 
 ***Ссылки***
 * [Введение в OAuth 2.0](https://www.digitalocean.com/community/tutorials/oauth-2-ru)
 
 ## Open ID Connect
-Основные элементы Open ID Connect
+Основные элементы Open ID Connect:  
+
 ![Основные элементы Open ID Connect](/images/sso/ru/openidconnect.png)
+
+- **Standard Claims** -openid, profile, email, adress, phone
+- **Methods** - метод для запроса более детальых клеймов
+- **ID Token** - собственно информация о пользователе
+- **UserInfo Endpoint** - информация о пользователе
 
 Все стандартные области действия (Scopes) и их соответствующие идентификационные данные (Claims) можно найти в [спецификации OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims).
 
 ## Описание типов взаимодействия (Grant Types)
 
 ### Схема выбора варианта вазимодействиия:
-![Как выбрать варианта вазимодействиия?](/images/sso/ru/how_select_granttype.png)
+**Еще раз. Как выбрать Grant Type?**
+
+- MVC app - Hybrid or Implict
+- Desktop (host browser) - Autorization Code
+- SPA or any JS app - Implicit
+- Mobile - Authorization Code with PKCE
+- Sever to server integration - Client credentials
 
 ![Схема выбора варианта вазимодействиия](/images/sso/ru/select_granttype.png)
 
 ***Ссылки***
 * [A Guide To OAuth 2.0 Grants](https://alexbilbie.com/guide-to-oauth-2-grants/) - еще один способ сделать выбор.
 
-
-### Implicit (Неявный)
-Для современных SPA и JS приложений
+### Implicit (Нееявный поток авторизации)
+Для современных SPA и JS приложений  
 ![Неявный поток авторизации](/images/sso/ru/implict_flow.png)
 
 В сложной микросервисной архитектуре, в случае, если используется проходы между микросервисами от имени пользователя, не рекомендуется использовать. Так как при цепочке взаимодействия микросервисов друг с другом может протухнуть токен, при незавершенном процессе обработки запроса. В таких случаях рекомендуется использовать вариант Hybrid
 
-![Проблемы неявного потока авторизации](/images/sso/ru/implict_problems.png)
+**Проблемы неявного потока авторизации**:  
+- Access token недоступен на сервере
+- Токен живет не долго (минуты-часы)
 
 ### Authorization code (Код авторизации)
 Поток кода авторизации изначально был задан в OAuth 2 и обеспечивает способ получения токенов по обратному каналу, а не по переднему каналу браузера. Он также поддерживает аутентификацию клиента. Хотя этот тип гранта поддерживается сам по себе, обычно рекомендуется объединять его с ***токенами идентификации***, которые превращают его в так называемый гибридный поток (Hybrid flow).  
-Hybrid flow gives you important extra features like signed protocol responses.
+Hybrid flow gives you important extra features like signed protocol responses.  
 ![Поток кода авторизации](/images/sso/ru/authorization-code-flow-russian.png) 
 
 ### Hybrid (Гибридный)
@@ -267,55 +271,45 @@ Hybrid flow gives you important extra features like signed protocol responses.
 "Классический сценарий" - вход по логину и паролю, не рекомендуется. Устаревший способ. 
 ![Поток авторизации пароля владельца ресурса](/images/sso/ru/resource_owner_grant_flow.png)  
 
-![Проблемы потока авторизации пароля владельца ресурса](/images/sso/ru/resource_owner_grant_problems.png)
+**Проблемы потока авторизации пароля владельца ресурса (resource owner grant)**:
+- Это вообще не аутентификация
+- Риск утечки пароля
+- Риск утечки refresh token
+- Нет поддержки Federated Identity
 
 ### Client credentials (Учетные данные клиента)
-Server to server integration:
+Server to server integration:  
 ![Поток авторизации учетных данных клиента](/images/sso/ru/client_credentials_flow.png)  
-![Проблемы потока авторизации учетных данных клиента](/images/sso/ru/client_credentials_problems.png)
+
+**Проблемы потока авторизации учетных данных клиента**:
+- Это вообще не аутентификация
+- Риск утечки пароля
+- Риск утечки refresh token
+- Нет поддержки Federated Identity
+- Нет пользователя 
 
 ### Device flow (Поток устройства)
-Поток авторизации устройств предназначен для устройств без браузера или устройств с ограниченным вводом, где пользователь не может безопасно свои учетные данные. Этот поток делает аутсортинг аутентификации пользователя и оптравляет запрос на согласие на внешнее устройство (например, смартфон). Этот поток обычно используется устройствами IoT и может запрашивать как ресурсы идентификации, так и ресурсы API.
+Поток авторизации устройств предназначен для устройств без браузера или устройств с ограниченным вводом, где пользователь не может безопасно свои учетные данные. Этот поток делает аутсортинг аутентификации пользователя и оптравляет запрос на согласие на внешнее устройство (например, смартфон). Этот поток обычно используется устройствами IoT и может запрашивать как ресурсы идентификации, так и ресурсы API.  
 ![Поток авторизации устрйоства](/images/sso/ru/device_flow.png)   
 
-***Ссылки***
-[OAuth 2.0 Device Flow Grant](https://alexbilbie.com/2016/04/oauth-2-device-flow-grant/)
-
-### Refresh tokens (Обновление токенов)
-Обновление токенов используется клиентами для обмена токена обновления (Refresh Token) на токен доступа (Access Token) после истечения срока действия токена доступа. Это позволяет клиентам по-прежнему иметь действительный токен доступа без дальнейшего взаимодействия с пользователем.
-
-***Ссылки***:
-* [Аутентификация и авторизация в микросервисных приложениях](https://habr.com/ru/company/dataart/blog/311376/)
-* [Построение SSO на примере Identity Server 4.0 (.NET Core 2.0)](https://www.youtube.com/watch?v=6Y7Glw6NzLM)
-
+***Ссылки***  
+- [OAuth 2.0 Device Flow Grant](https://alexbilbie.com/2016/04/oauth-2-device-flow-grant/)
 
 ## IdentityServer 4
+Это промежуточное ПО, реализация протоколов OAuth2 и OpenID Connect для .Net Core. Является одним из ключевых компонентов **SSO**.  
+![IdentityServer 4](/images/sso/ru/identityserver.jpg)
 
+**Ссылки по IdentityServer 4**
 * [Официальная документация по IdentityServer 4](http://docs.identityserver.io/en/latest/)
 * [Репозиторий исходного кода IdentityServer](https://github.com/IdentityServer/IdentityServer4)
 * [Официальная страница IdentityServer](https://identityserver.io/)
-* [The administration for the IdentityServer4 and Asp.Net Core Identity](https://github.com/skoruba/IdentityServer4.Admin) - Готовый шаблон с UI пользователя и администратора для реализации SSO.
-
-***Полезные ссылки***  
-* Видео:  
+* Видео 
     * [Построение SSO на примере Identity Server 4.0 (.NET Core 2.0)](https://www.youtube.com/watch?v=6Y7Glw6NzLM)
     * [IdentityServer4 на практике](https://www.youtube.com/watch?v=Gw3Wryvv6Rg)
 * Статьи  
     * [Имплементация OpenId Connect в ASP.NET Core при помощи IdentityServer4 и oidc-client (Implict flow)](https://habr.com/ru/post/337784/)
     * [User Authentication and Identity with Angular, Asp.Net Core and IdentityServer (Implict flow)](https://fullstackmark.com/post/21/user-authentication-and-identity-with-angular-aspnet-core-and-identityserver)
-* Примеры:
+* Примеры
     * [Policy-based authorization for web API using JWT and identityserver4 and Asp.Net Core 2](https://github.com/HamidMosalla/OAuth2-OpenIDConnect-JWT-Samples)
-
-
-## Single Sign-On (SSO)
-
-**Аутентификация**: процесс объекта (Принципала), удостоверяющий свою личность другому объекту (Системе).
-
-**Single Sign On (SSO)**: характеристика механизма аутентификации, который относится к идентификатору пользователя, используемому для предоставления доступа нескольким поставщикам услуг.
-
-**Федерация**: общие стандарты и протоколы для управления и сопоставления идентификаторов пользователей между поставщиками удостоверений в организациях (и доменах безопасности) через доверительные отношения (обычно устанавливаемые с помощью цифровых подписей, шифрования и PKI).
-
-Во-первых, управление идентификацией и доступом (IAM) - это управление проблемами идентификации в организации, занимающейся информационными технологиями. Термин IAM может относиться к команде или обязанностям команды. В идеале IAM - это централизованная команда, но из-за истории, политики или организационной структуры это не всегда возможно.
-
-* [Authentication vs. Federation vs. SSO](https://medium.com/@robert.broeckelmann/authentication-vs-federation-vs-sso-9586b06b1380)
-* [Keeping Your APIs Secure for Multiple User Types](https://medium.com/@robert.broeckelmann/keeping-your-apis-secure-for-multiple-user-types-d5c627793c4c)
+* Шаблоны
+    * [skoruba/IdentityServer4.Admin](https://github.com/skoruba/IdentityServer4.Admin) - Готовый шаблон реализации SSO, с UI пользователя и администратора. 
